@@ -9,7 +9,8 @@ export class CreateContatoController {
         const responseContent = {
             status: false,
             message: "Houve um erro ao tentar enviar os dados.",
-            data: {}
+            data: {},
+            resend: {}
         };
         const { nome, email, phone } = request.body;
 
@@ -29,7 +30,7 @@ export class CreateContatoController {
                 responseContent.message = "Recebemos seu contato com sucesso";
                 responseContent.data = contatoPrisma;
 
-                resend.emails.send({
+                responseContent.resend = resend.emails.send({
                     from: 'onboarding@resend.dev',
                     to: ['contato@estudiogrape.com.br', 'fabiofreitassilvacontato@gmail.com'],
                     subject: 'Contato - Site',
