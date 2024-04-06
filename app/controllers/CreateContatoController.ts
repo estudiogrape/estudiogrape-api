@@ -31,7 +31,7 @@ export class CreateContatoController {
                 responseContent.data = contatoPrisma;
 
                 responseContent.resend = resend.emails.send({
-                    from: 'onboarding@resend.dev',
+                    from: 'noreply@estudiogrape.com.br',
                     to: ['contato@estudiogrape.com.br', 'fabiofreitassilvacontato@gmail.com'],
                     subject: 'Contato - Site',
                     html: '<p>nome: ' + nome + '</p><p>email: ' + email + '</p><p>phone: ' + phone + '</p>'
