@@ -18,6 +18,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type Contato = $Result.DefaultSelection<Prisma.$ContatoPayload>
+/**
+ * Model GoodSun_Email
+ * 
+ */
+export type GoodSun_Email = $Result.DefaultSelection<Prisma.$GoodSun_EmailPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -150,6 +155,16 @@ export class PrismaClient<
     * ```
     */
   get contato(): Prisma.ContatoDelegate<ExtArgs>;
+
+  /**
+   * `prisma.goodSun_Email`: Exposes CRUD operations for the **GoodSun_Email** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GoodSun_Emails
+    * const goodSun_Emails = await prisma.goodSun_Email.findMany()
+    * ```
+    */
+  get goodSun_Email(): Prisma.GoodSun_EmailDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -620,7 +635,8 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    Contato: 'Contato'
+    Contato: 'Contato',
+    GoodSun_Email: 'GoodSun_Email'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -637,7 +653,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'contato'
+      modelProps: 'contato' | 'goodSun_Email'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -704,6 +720,72 @@ export namespace Prisma {
           count: {
             args: Prisma.ContatoCountArgs<ExtArgs>,
             result: $Utils.Optional<ContatoCountAggregateOutputType> | number
+          }
+        }
+      }
+      GoodSun_Email: {
+        payload: Prisma.$GoodSun_EmailPayload<ExtArgs>
+        fields: Prisma.GoodSun_EmailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GoodSun_EmailFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          findFirst: {
+            args: Prisma.GoodSun_EmailFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          findMany: {
+            args: Prisma.GoodSun_EmailFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>[]
+          }
+          create: {
+            args: Prisma.GoodSun_EmailCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          createMany: {
+            args: Prisma.GoodSun_EmailCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.GoodSun_EmailDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          update: {
+            args: Prisma.GoodSun_EmailUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          deleteMany: {
+            args: Prisma.GoodSun_EmailDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GoodSun_EmailUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.GoodSun_EmailUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
+          }
+          aggregate: {
+            args: Prisma.GoodSun_EmailAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateGoodSun_Email>
+          }
+          groupBy: {
+            args: Prisma.GoodSun_EmailGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<GoodSun_EmailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GoodSun_EmailCountArgs<ExtArgs>,
+            result: $Utils.Optional<GoodSun_EmailCountAggregateOutputType> | number
           }
         }
       }
@@ -1737,6 +1819,854 @@ export namespace Prisma {
 
 
   /**
+   * Model GoodSun_Email
+   */
+
+  export type AggregateGoodSun_Email = {
+    _count: GoodSun_EmailCountAggregateOutputType | null
+    _min: GoodSun_EmailMinAggregateOutputType | null
+    _max: GoodSun_EmailMaxAggregateOutputType | null
+  }
+
+  export type GoodSun_EmailMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    created_at: Date | null
+  }
+
+  export type GoodSun_EmailMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    created_at: Date | null
+  }
+
+  export type GoodSun_EmailCountAggregateOutputType = {
+    id: number
+    email: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type GoodSun_EmailMinAggregateInputType = {
+    id?: true
+    email?: true
+    created_at?: true
+  }
+
+  export type GoodSun_EmailMaxAggregateInputType = {
+    id?: true
+    email?: true
+    created_at?: true
+  }
+
+  export type GoodSun_EmailCountAggregateInputType = {
+    id?: true
+    email?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type GoodSun_EmailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GoodSun_Email to aggregate.
+     */
+    where?: GoodSun_EmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GoodSun_Emails to fetch.
+     */
+    orderBy?: GoodSun_EmailOrderByWithRelationInput | GoodSun_EmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GoodSun_EmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GoodSun_Emails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GoodSun_Emails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GoodSun_Emails
+    **/
+    _count?: true | GoodSun_EmailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GoodSun_EmailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GoodSun_EmailMaxAggregateInputType
+  }
+
+  export type GetGoodSun_EmailAggregateType<T extends GoodSun_EmailAggregateArgs> = {
+        [P in keyof T & keyof AggregateGoodSun_Email]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGoodSun_Email[P]>
+      : GetScalarType<T[P], AggregateGoodSun_Email[P]>
+  }
+
+
+
+
+  export type GoodSun_EmailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GoodSun_EmailWhereInput
+    orderBy?: GoodSun_EmailOrderByWithAggregationInput | GoodSun_EmailOrderByWithAggregationInput[]
+    by: GoodSun_EmailScalarFieldEnum[] | GoodSun_EmailScalarFieldEnum
+    having?: GoodSun_EmailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GoodSun_EmailCountAggregateInputType | true
+    _min?: GoodSun_EmailMinAggregateInputType
+    _max?: GoodSun_EmailMaxAggregateInputType
+  }
+
+  export type GoodSun_EmailGroupByOutputType = {
+    id: string
+    email: string
+    created_at: Date
+    _count: GoodSun_EmailCountAggregateOutputType | null
+    _min: GoodSun_EmailMinAggregateOutputType | null
+    _max: GoodSun_EmailMaxAggregateOutputType | null
+  }
+
+  type GetGoodSun_EmailGroupByPayload<T extends GoodSun_EmailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GoodSun_EmailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GoodSun_EmailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GoodSun_EmailGroupByOutputType[P]>
+            : GetScalarType<T[P], GoodSun_EmailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GoodSun_EmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["goodSun_Email"]>
+
+  export type GoodSun_EmailSelectScalar = {
+    id?: boolean
+    email?: boolean
+    created_at?: boolean
+  }
+
+
+  export type $GoodSun_EmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GoodSun_Email"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      created_at: Date
+    }, ExtArgs["result"]["goodSun_Email"]>
+    composites: {}
+  }
+
+
+  type GoodSun_EmailGetPayload<S extends boolean | null | undefined | GoodSun_EmailDefaultArgs> = $Result.GetResult<Prisma.$GoodSun_EmailPayload, S>
+
+  type GoodSun_EmailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GoodSun_EmailFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GoodSun_EmailCountAggregateInputType | true
+    }
+
+  export interface GoodSun_EmailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GoodSun_Email'], meta: { name: 'GoodSun_Email' } }
+    /**
+     * Find zero or one GoodSun_Email that matches the filter.
+     * @param {GoodSun_EmailFindUniqueArgs} args - Arguments to find a GoodSun_Email
+     * @example
+     * // Get one GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends GoodSun_EmailFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailFindUniqueArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one GoodSun_Email that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {GoodSun_EmailFindUniqueOrThrowArgs} args - Arguments to find a GoodSun_Email
+     * @example
+     * // Get one GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first GoodSun_Email that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailFindFirstArgs} args - Arguments to find a GoodSun_Email
+     * @example
+     * // Get one GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends GoodSun_EmailFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailFindFirstArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first GoodSun_Email that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailFindFirstOrThrowArgs} args - Arguments to find a GoodSun_Email
+     * @example
+     * // Get one GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more GoodSun_Emails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GoodSun_Emails
+     * const goodSun_Emails = await prisma.goodSun_Email.findMany()
+     * 
+     * // Get first 10 GoodSun_Emails
+     * const goodSun_Emails = await prisma.goodSun_Email.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const goodSun_EmailWithIdOnly = await prisma.goodSun_Email.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends GoodSun_EmailFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a GoodSun_Email.
+     * @param {GoodSun_EmailCreateArgs} args - Arguments to create a GoodSun_Email.
+     * @example
+     * // Create one GoodSun_Email
+     * const GoodSun_Email = await prisma.goodSun_Email.create({
+     *   data: {
+     *     // ... data to create a GoodSun_Email
+     *   }
+     * })
+     * 
+    **/
+    create<T extends GoodSun_EmailCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailCreateArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Create many GoodSun_Emails.
+     *     @param {GoodSun_EmailCreateManyArgs} args - Arguments to create many GoodSun_Emails.
+     *     @example
+     *     // Create many GoodSun_Emails
+     *     const goodSun_Email = await prisma.goodSun_Email.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends GoodSun_EmailCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a GoodSun_Email.
+     * @param {GoodSun_EmailDeleteArgs} args - Arguments to delete one GoodSun_Email.
+     * @example
+     * // Delete one GoodSun_Email
+     * const GoodSun_Email = await prisma.goodSun_Email.delete({
+     *   where: {
+     *     // ... filter to delete one GoodSun_Email
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends GoodSun_EmailDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailDeleteArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one GoodSun_Email.
+     * @param {GoodSun_EmailUpdateArgs} args - Arguments to update one GoodSun_Email.
+     * @example
+     * // Update one GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends GoodSun_EmailUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailUpdateArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more GoodSun_Emails.
+     * @param {GoodSun_EmailDeleteManyArgs} args - Arguments to filter GoodSun_Emails to delete.
+     * @example
+     * // Delete a few GoodSun_Emails
+     * const { count } = await prisma.goodSun_Email.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends GoodSun_EmailDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, GoodSun_EmailDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GoodSun_Emails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GoodSun_Emails
+     * const goodSun_Email = await prisma.goodSun_Email.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends GoodSun_EmailUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GoodSun_Email.
+     * @param {GoodSun_EmailUpsertArgs} args - Arguments to update or create a GoodSun_Email.
+     * @example
+     * // Update or create a GoodSun_Email
+     * const goodSun_Email = await prisma.goodSun_Email.upsert({
+     *   create: {
+     *     // ... data to create a GoodSun_Email
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GoodSun_Email we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends GoodSun_EmailUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, GoodSun_EmailUpsertArgs<ExtArgs>>
+    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of GoodSun_Emails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailCountArgs} args - Arguments to filter GoodSun_Emails to count.
+     * @example
+     * // Count the number of GoodSun_Emails
+     * const count = await prisma.goodSun_Email.count({
+     *   where: {
+     *     // ... the filter for the GoodSun_Emails we want to count
+     *   }
+     * })
+    **/
+    count<T extends GoodSun_EmailCountArgs>(
+      args?: Subset<T, GoodSun_EmailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GoodSun_EmailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GoodSun_Email.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GoodSun_EmailAggregateArgs>(args: Subset<T, GoodSun_EmailAggregateArgs>): Prisma.PrismaPromise<GetGoodSun_EmailAggregateType<T>>
+
+    /**
+     * Group by GoodSun_Email.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GoodSun_EmailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GoodSun_EmailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GoodSun_EmailGroupByArgs['orderBy'] }
+        : { orderBy?: GoodSun_EmailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GoodSun_EmailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGoodSun_EmailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GoodSun_Email model
+   */
+  readonly fields: GoodSun_EmailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GoodSun_Email.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GoodSun_EmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the GoodSun_Email model
+   */ 
+  interface GoodSun_EmailFieldRefs {
+    readonly id: FieldRef<"GoodSun_Email", 'String'>
+    readonly email: FieldRef<"GoodSun_Email", 'String'>
+    readonly created_at: FieldRef<"GoodSun_Email", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+
+  /**
+   * GoodSun_Email findUnique
+   */
+  export type GoodSun_EmailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter, which GoodSun_Email to fetch.
+     */
+    where: GoodSun_EmailWhereUniqueInput
+  }
+
+
+  /**
+   * GoodSun_Email findUniqueOrThrow
+   */
+  export type GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter, which GoodSun_Email to fetch.
+     */
+    where: GoodSun_EmailWhereUniqueInput
+  }
+
+
+  /**
+   * GoodSun_Email findFirst
+   */
+  export type GoodSun_EmailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter, which GoodSun_Email to fetch.
+     */
+    where?: GoodSun_EmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GoodSun_Emails to fetch.
+     */
+    orderBy?: GoodSun_EmailOrderByWithRelationInput | GoodSun_EmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GoodSun_Emails.
+     */
+    cursor?: GoodSun_EmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GoodSun_Emails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GoodSun_Emails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GoodSun_Emails.
+     */
+    distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
+  }
+
+
+  /**
+   * GoodSun_Email findFirstOrThrow
+   */
+  export type GoodSun_EmailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter, which GoodSun_Email to fetch.
+     */
+    where?: GoodSun_EmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GoodSun_Emails to fetch.
+     */
+    orderBy?: GoodSun_EmailOrderByWithRelationInput | GoodSun_EmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GoodSun_Emails.
+     */
+    cursor?: GoodSun_EmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GoodSun_Emails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GoodSun_Emails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GoodSun_Emails.
+     */
+    distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
+  }
+
+
+  /**
+   * GoodSun_Email findMany
+   */
+  export type GoodSun_EmailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter, which GoodSun_Emails to fetch.
+     */
+    where?: GoodSun_EmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GoodSun_Emails to fetch.
+     */
+    orderBy?: GoodSun_EmailOrderByWithRelationInput | GoodSun_EmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GoodSun_Emails.
+     */
+    cursor?: GoodSun_EmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GoodSun_Emails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GoodSun_Emails.
+     */
+    skip?: number
+    distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
+  }
+
+
+  /**
+   * GoodSun_Email create
+   */
+  export type GoodSun_EmailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * The data needed to create a GoodSun_Email.
+     */
+    data: XOR<GoodSun_EmailCreateInput, GoodSun_EmailUncheckedCreateInput>
+  }
+
+
+  /**
+   * GoodSun_Email createMany
+   */
+  export type GoodSun_EmailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GoodSun_Emails.
+     */
+    data: GoodSun_EmailCreateManyInput | GoodSun_EmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * GoodSun_Email update
+   */
+  export type GoodSun_EmailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * The data needed to update a GoodSun_Email.
+     */
+    data: XOR<GoodSun_EmailUpdateInput, GoodSun_EmailUncheckedUpdateInput>
+    /**
+     * Choose, which GoodSun_Email to update.
+     */
+    where: GoodSun_EmailWhereUniqueInput
+  }
+
+
+  /**
+   * GoodSun_Email updateMany
+   */
+  export type GoodSun_EmailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GoodSun_Emails.
+     */
+    data: XOR<GoodSun_EmailUpdateManyMutationInput, GoodSun_EmailUncheckedUpdateManyInput>
+    /**
+     * Filter which GoodSun_Emails to update
+     */
+    where?: GoodSun_EmailWhereInput
+  }
+
+
+  /**
+   * GoodSun_Email upsert
+   */
+  export type GoodSun_EmailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * The filter to search for the GoodSun_Email to update in case it exists.
+     */
+    where: GoodSun_EmailWhereUniqueInput
+    /**
+     * In case the GoodSun_Email found by the `where` argument doesn't exist, create a new GoodSun_Email with this data.
+     */
+    create: XOR<GoodSun_EmailCreateInput, GoodSun_EmailUncheckedCreateInput>
+    /**
+     * In case the GoodSun_Email was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GoodSun_EmailUpdateInput, GoodSun_EmailUncheckedUpdateInput>
+  }
+
+
+  /**
+   * GoodSun_Email delete
+   */
+  export type GoodSun_EmailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+    /**
+     * Filter which GoodSun_Email to delete.
+     */
+    where: GoodSun_EmailWhereUniqueInput
+  }
+
+
+  /**
+   * GoodSun_Email deleteMany
+   */
+  export type GoodSun_EmailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GoodSun_Emails to delete
+     */
+    where?: GoodSun_EmailWhereInput
+  }
+
+
+  /**
+   * GoodSun_Email without action
+   */
+  export type GoodSun_EmailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelect<ExtArgs> | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -1759,6 +2689,15 @@ export namespace Prisma {
   };
 
   export type ContatoScalarFieldEnum = (typeof ContatoScalarFieldEnum)[keyof typeof ContatoScalarFieldEnum]
+
+
+  export const GoodSun_EmailScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    created_at: 'created_at'
+  };
+
+  export type GoodSun_EmailScalarFieldEnum = (typeof GoodSun_EmailScalarFieldEnum)[keyof typeof GoodSun_EmailScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -1879,6 +2818,48 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"Contato"> | Date | string
   }
 
+  export type GoodSun_EmailWhereInput = {
+    AND?: GoodSun_EmailWhereInput | GoodSun_EmailWhereInput[]
+    OR?: GoodSun_EmailWhereInput[]
+    NOT?: GoodSun_EmailWhereInput | GoodSun_EmailWhereInput[]
+    id?: StringFilter<"GoodSun_Email"> | string
+    email?: StringFilter<"GoodSun_Email"> | string
+    created_at?: DateTimeFilter<"GoodSun_Email"> | Date | string
+  }
+
+  export type GoodSun_EmailOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type GoodSun_EmailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GoodSun_EmailWhereInput | GoodSun_EmailWhereInput[]
+    OR?: GoodSun_EmailWhereInput[]
+    NOT?: GoodSun_EmailWhereInput | GoodSun_EmailWhereInput[]
+    email?: StringFilter<"GoodSun_Email"> | string
+    created_at?: DateTimeFilter<"GoodSun_Email"> | Date | string
+  }, "id">
+
+  export type GoodSun_EmailOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    created_at?: SortOrder
+    _count?: GoodSun_EmailCountOrderByAggregateInput
+    _max?: GoodSun_EmailMaxOrderByAggregateInput
+    _min?: GoodSun_EmailMinOrderByAggregateInput
+  }
+
+  export type GoodSun_EmailScalarWhereWithAggregatesInput = {
+    AND?: GoodSun_EmailScalarWhereWithAggregatesInput | GoodSun_EmailScalarWhereWithAggregatesInput[]
+    OR?: GoodSun_EmailScalarWhereWithAggregatesInput[]
+    NOT?: GoodSun_EmailScalarWhereWithAggregatesInput | GoodSun_EmailScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GoodSun_Email"> | string
+    email?: StringWithAggregatesFilter<"GoodSun_Email"> | string
+    created_at?: DateTimeWithAggregatesFilter<"GoodSun_Email"> | Date | string
+  }
+
   export type ContatoCreateInput = {
     id?: string
     nome: string
@@ -1932,6 +2913,48 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GoodSun_EmailCreateInput = {
+    id?: string
+    email: string
+    created_at?: Date | string
+  }
+
+  export type GoodSun_EmailUncheckedCreateInput = {
+    id?: string
+    email: string
+    created_at?: Date | string
+  }
+
+  export type GoodSun_EmailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GoodSun_EmailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GoodSun_EmailCreateManyInput = {
+    id?: string
+    email: string
+    created_at?: Date | string
+  }
+
+  export type GoodSun_EmailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GoodSun_EmailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2015,6 +3038,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type GoodSun_EmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type GoodSun_EmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type GoodSun_EmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    created_at?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -2101,6 +3142,10 @@ export namespace Prisma {
      * @deprecated Use ContatoDefaultArgs instead
      */
     export type ContatoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ContatoDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GoodSun_EmailDefaultArgs instead
+     */
+    export type GoodSun_EmailArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GoodSun_EmailDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

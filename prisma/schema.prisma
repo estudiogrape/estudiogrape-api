@@ -23,3 +23,12 @@ model Contato {
 
   @@map("grape_contato")
 }
+
+
+model GoodSun_Email {
+  id         String   @id @default(uuid())
+  email      String   
+  created_at DateTime @default(now())
+
+  @@map("goodsun_email")
+}

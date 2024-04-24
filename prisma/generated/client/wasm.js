@@ -127,6 +127,12 @@ exports.Prisma.ContatoScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.GoodSun_EmailScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -139,7 +145,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Contato: 'Contato'
+  Contato: 'Contato',
+  GoodSun_Email: 'GoodSun_Email'
 };
 
 /**
