@@ -8,6 +8,9 @@ const allowedOrigins = [
     'https://estudiogrape.vercel.app',
     'https://estudiogrape.com.br',
     'https://www.estudiogrape.com.br',
+
+    'https://goodsunsolar.com.br/',
+    'https://www.goodsunsolar.com.br',
 ];
 const options: cors.CorsOptions = {
     origin: allowedOrigins
