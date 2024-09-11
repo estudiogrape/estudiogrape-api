@@ -17,17 +17,16 @@ datasource db {
 model Contato {
   id         String   @id @default(uuid())
   nome       String
-  email      String   
-  phone      String   
+  email      String
+  phone      String
   created_at DateTime @default(now())
 
   @@map("grape_contato")
 }
 
-
 model GoodSun_Email {
   id         String   @id @default(uuid())
-  email      String   
+  email      String
   created_at DateTime @default(now())
 
   @@map("goodsun_email")

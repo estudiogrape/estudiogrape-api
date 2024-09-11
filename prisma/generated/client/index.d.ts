@@ -39,8 +39,8 @@ export type GoodSun_Email = $Result.DefaultSelection<Prisma.$GoodSun_EmailPayloa
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
  */
 export class PrismaClient<
-  T extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
+  ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
+  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -60,7 +60,7 @@ export class PrismaClient<
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
    */
 
-  constructor(optionsArg ?: Prisma.Subset<T, Prisma.PrismaClientOptions>);
+  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
 
   /**
@@ -126,6 +126,7 @@ export class PrismaClient<
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
+
   /**
    * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
    * @example
@@ -144,7 +145,7 @@ export class PrismaClient<
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
 
-  $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
+  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb, ExtArgs>
 
       /**
    * `prisma.contato`: Exposes CRUD operations for the **Contato** model.
@@ -222,8 +223,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 5.12.1
-   * Query Engine version: 473ed3124229e22d881cb7addf559799debae1ab
+   * Prisma Client JS version: 5.19.1
+   * Query Engine version: 69d742ee20b815d88e17e54db4a2a7a3b30324e3
    */
   export type PrismaVersion = {
     client: string
@@ -235,51 +236,13 @@ export namespace Prisma {
    * Utility Types
    */
 
-  /**
-   * From https://github.com/sindresorhus/type-fest/
-   * Matches a JSON object.
-   * This type can be useful to enforce some input to be JSON-compatible or as a super-type to be extended from. 
-   */
-  export type JsonObject = {[Key in string]?: JsonValue}
 
-  /**
-   * From https://github.com/sindresorhus/type-fest/
-   * Matches a JSON array.
-   */
-  export interface JsonArray extends Array<JsonValue> {}
-
-  /**
-   * From https://github.com/sindresorhus/type-fest/
-   * Matches any valid JSON value.
-   */
-  export type JsonValue = string | number | boolean | JsonObject | JsonArray | null
-
-  /**
-   * Matches a JSON object.
-   * Unlike `JsonObject`, this type allows undefined and read-only properties.
-   */
-  export type InputJsonObject = {readonly [Key in string]?: InputJsonValue | null}
-
-  /**
-   * Matches a JSON array.
-   * Unlike `JsonArray`, readonly arrays are assignable to this type.
-   */
-  export interface InputJsonArray extends ReadonlyArray<InputJsonValue | null> {}
-
-  /**
-   * Matches any valid value that can be used as an input for operations like
-   * create and update as the value of a JSON field. Unlike `JsonValue`, this
-   * type allows read-only arrays and read-only object properties and disallows
-   * `null` at the top level.
-   *
-   * `null` cannot be used as the value of a JSON field because its meaning
-   * would be ambiguous. Use `Prisma.JsonNull` to store the JSON null value or
-   * `Prisma.DbNull` to clear the JSON value and set the field to the database
-   * NULL value instead.
-   *
-   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
-   */
-  export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray | { toJSON(): unknown }
+  export import JsonObject = runtime.JsonObject
+  export import JsonArray = runtime.JsonArray
+  export import JsonValue = runtime.JsonValue
+  export import InputJsonObject = runtime.InputJsonObject
+  export import InputJsonArray = runtime.InputJsonArray
+  export import InputJsonValue = runtime.InputJsonValue
 
   /**
    * Types of the values used to represent different kinds of `null` values when working with JSON fields.
@@ -350,6 +313,11 @@ export namespace Prisma {
     include: any
   }
 
+  type SelectAndOmit = {
+    select: any
+    omit: any
+  }
+
   /**
    * Get the type of the value, that the Promise holds.
    */
@@ -398,7 +366,9 @@ export namespace Prisma {
   } &
     (T extends SelectAndInclude
       ? 'Please either choose `select` or `include`.'
-      : {})
+      : T extends SelectAndOmit
+        ? 'Please either choose `select` or `omit`.'
+        : {})
 
   /**
    * Subset + Intersection
@@ -646,79 +616,82 @@ export namespace Prisma {
     db?: Datasource
   }
 
-
-  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs}, $Utils.Record<string, any>> {
-    returns: Prisma.TypeMap<this['params']['extArgs']>
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs, clientOptions: PrismaClientOptions }, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs'], this['params']['clientOptions']>
   }
 
-  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: 'contato' | 'goodSun_Email'
+      modelProps: "contato" | "goodSun_Email"
       txIsolationLevel: Prisma.TransactionIsolationLevel
-    },
+    }
     model: {
       Contato: {
         payload: Prisma.$ContatoPayload<ExtArgs>
         fields: Prisma.ContatoFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ContatoFindUniqueArgs<ExtArgs>,
+            args: Prisma.ContatoFindUniqueArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ContatoFindUniqueOrThrowArgs<ExtArgs>,
+            args: Prisma.ContatoFindUniqueOrThrowArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           findFirst: {
-            args: Prisma.ContatoFindFirstArgs<ExtArgs>,
+            args: Prisma.ContatoFindFirstArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ContatoFindFirstOrThrowArgs<ExtArgs>,
+            args: Prisma.ContatoFindFirstOrThrowArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           findMany: {
-            args: Prisma.ContatoFindManyArgs<ExtArgs>,
+            args: Prisma.ContatoFindManyArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>[]
           }
           create: {
-            args: Prisma.ContatoCreateArgs<ExtArgs>,
+            args: Prisma.ContatoCreateArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           createMany: {
-            args: Prisma.ContatoCreateManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.ContatoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContatoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContatoPayload>[]
           }
           delete: {
-            args: Prisma.ContatoDeleteArgs<ExtArgs>,
+            args: Prisma.ContatoDeleteArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           update: {
-            args: Prisma.ContatoUpdateArgs<ExtArgs>,
+            args: Prisma.ContatoUpdateArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           deleteMany: {
-            args: Prisma.ContatoDeleteManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.ContatoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ContatoUpdateManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.ContatoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
           }
           upsert: {
-            args: Prisma.ContatoUpsertArgs<ExtArgs>,
+            args: Prisma.ContatoUpsertArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$ContatoPayload>
           }
           aggregate: {
-            args: Prisma.ContatoAggregateArgs<ExtArgs>,
+            args: Prisma.ContatoAggregateArgs<ExtArgs>
             result: $Utils.Optional<AggregateContato>
           }
           groupBy: {
-            args: Prisma.ContatoGroupByArgs<ExtArgs>,
+            args: Prisma.ContatoGroupByArgs<ExtArgs>
             result: $Utils.Optional<ContatoGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ContatoCountArgs<ExtArgs>,
+            args: Prisma.ContatoCountArgs<ExtArgs>
             result: $Utils.Optional<ContatoCountAggregateOutputType> | number
           }
         }
@@ -728,63 +701,67 @@ export namespace Prisma {
         fields: Prisma.GoodSun_EmailFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.GoodSun_EmailFindUniqueArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailFindUniqueArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           findFirst: {
-            args: Prisma.GoodSun_EmailFindFirstArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailFindFirstArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           findMany: {
-            args: Prisma.GoodSun_EmailFindManyArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailFindManyArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>[]
           }
           create: {
-            args: Prisma.GoodSun_EmailCreateArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailCreateArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           createMany: {
-            args: Prisma.GoodSun_EmailCreateManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.GoodSun_EmailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GoodSun_EmailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>[]
           }
           delete: {
-            args: Prisma.GoodSun_EmailDeleteArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailDeleteArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           update: {
-            args: Prisma.GoodSun_EmailUpdateArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailUpdateArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           deleteMany: {
-            args: Prisma.GoodSun_EmailDeleteManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.GoodSun_EmailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
           }
           updateMany: {
-            args: Prisma.GoodSun_EmailUpdateManyArgs<ExtArgs>,
-            result: Prisma.BatchPayload
+            args: Prisma.GoodSun_EmailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
           }
           upsert: {
-            args: Prisma.GoodSun_EmailUpsertArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailUpsertArgs<ExtArgs>
             result: $Utils.PayloadToResult<Prisma.$GoodSun_EmailPayload>
           }
           aggregate: {
-            args: Prisma.GoodSun_EmailAggregateArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailAggregateArgs<ExtArgs>
             result: $Utils.Optional<AggregateGoodSun_Email>
           }
           groupBy: {
-            args: Prisma.GoodSun_EmailGroupByArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailGroupByArgs<ExtArgs>
             result: $Utils.Optional<GoodSun_EmailGroupByOutputType>[]
           }
           count: {
-            args: Prisma.GoodSun_EmailCountArgs<ExtArgs>,
+            args: Prisma.GoodSun_EmailCountArgs<ExtArgs>
             result: $Utils.Optional<GoodSun_EmailCountAggregateOutputType> | number
           }
         }
@@ -794,15 +771,11 @@ export namespace Prisma {
     other: {
       payload: any
       operations: {
-        $executeRawUnsafe: {
-          args: [query: string, ...values: any[]],
-          result: any
-        }
         $executeRaw: {
           args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
           result: any
         }
-        $queryRawUnsafe: {
+        $executeRawUnsafe: {
           args: [query: string, ...values: any[]],
           result: any
         }
@@ -810,10 +783,14 @@ export namespace Prisma {
           args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
           result: any
         }
+        $queryRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
       }
     }
   }
-  export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
+  export const defineExtension: $Extensions.ExtendsHook<"define", Prisma.TypeMapCb, $Extensions.DefaultArgs>
   export type DefaultPrismaClient = PrismaClient
   export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
   export interface PrismaClientOptions {
@@ -858,6 +835,7 @@ export namespace Prisma {
     }
   }
 
+
   /* Types for Logging */
   export type LogLevel = 'info' | 'query' | 'warn' | 'error'
   export type LogDefinition = {
@@ -894,6 +872,7 @@ export namespace Prisma {
     | 'findFirstOrThrow'
     | 'create'
     | 'createMany'
+    | 'createManyAndReturn'
     | 'update'
     | 'updateMany'
     | 'upsert'
@@ -1114,6 +1093,14 @@ export namespace Prisma {
     created_at?: boolean
   }, ExtArgs["result"]["contato"]>
 
+  export type ContatoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nome?: boolean
+    email?: boolean
+    phone?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["contato"]>
+
   export type ContatoSelectScalar = {
     id?: boolean
     nome?: boolean
@@ -1136,7 +1123,6 @@ export namespace Prisma {
     composites: {}
   }
 
-
   type ContatoGetPayload<S extends boolean | null | undefined | ContatoDefaultArgs> = $Result.GetResult<Prisma.$ContatoPayload, S>
 
   type ContatoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
@@ -1156,14 +1142,12 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findUnique<T extends ContatoFindUniqueArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoFindUniqueArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+     */
+    findUnique<T extends ContatoFindUniqueArgs>(args: SelectSubset<T, ContatoFindUniqueArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
 
     /**
-     * Find one Contato that matches the filter or throw an error  with `error.code='P2025'` 
-     *     if no matches were found.
+     * Find one Contato that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
      * @param {ContatoFindUniqueOrThrowArgs} args - Arguments to find a Contato
      * @example
      * // Get one Contato
@@ -1172,10 +1156,8 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findUniqueOrThrow<T extends ContatoFindUniqueOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoFindUniqueOrThrowArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+     */
+    findUniqueOrThrow<T extends ContatoFindUniqueOrThrowArgs>(args: SelectSubset<T, ContatoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
 
     /**
      * Find the first Contato that matches the filter.
@@ -1189,10 +1171,8 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findFirst<T extends ContatoFindFirstArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoFindFirstArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+     */
+    findFirst<T extends ContatoFindFirstArgs>(args?: SelectSubset<T, ContatoFindFirstArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
 
     /**
      * Find the first Contato that matches the filter or
@@ -1207,16 +1187,14 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findFirstOrThrow<T extends ContatoFindFirstOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoFindFirstOrThrowArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+     */
+    findFirstOrThrow<T extends ContatoFindFirstOrThrowArgs>(args?: SelectSubset<T, ContatoFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
 
     /**
      * Find zero or more Contatoes that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContatoFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {ContatoFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all Contatoes
      * const contatoes = await prisma.contato.findMany()
@@ -1227,10 +1205,8 @@ export namespace Prisma {
      * // Only select the `id`
      * const contatoWithIdOnly = await prisma.contato.findMany({ select: { id: true } })
      * 
-    **/
-    findMany<T extends ContatoFindManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoFindManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'findMany'>>
+     */
+    findMany<T extends ContatoFindManyArgs>(args?: SelectSubset<T, ContatoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "findMany">>
 
     /**
      * Create a Contato.
@@ -1243,26 +1219,46 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    create<T extends ContatoCreateArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoCreateArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+     */
+    create<T extends ContatoCreateArgs>(args: SelectSubset<T, ContatoCreateArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "create">, never, ExtArgs>
 
     /**
      * Create many Contatoes.
-     *     @param {ContatoCreateManyArgs} args - Arguments to create many Contatoes.
-     *     @example
-     *     // Create many Contatoes
-     *     const contato = await prisma.contato.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {ContatoCreateManyArgs} args - Arguments to create many Contatoes.
+     * @example
+     * // Create many Contatoes
+     * const contato = await prisma.contato.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
-    **/
-    createMany<T extends ContatoCreateManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoCreateManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    createMany<T extends ContatoCreateManyArgs>(args?: SelectSubset<T, ContatoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Contatoes and returns the data saved in the database.
+     * @param {ContatoCreateManyAndReturnArgs} args - Arguments to create many Contatoes.
+     * @example
+     * // Create many Contatoes
+     * const contato = await prisma.contato.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Contatoes and only return the `id`
+     * const contatoWithIdOnly = await prisma.contato.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContatoCreateManyAndReturnArgs>(args?: SelectSubset<T, ContatoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "createManyAndReturn">>
 
     /**
      * Delete a Contato.
@@ -1275,10 +1271,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    delete<T extends ContatoDeleteArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoDeleteArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+     */
+    delete<T extends ContatoDeleteArgs>(args: SelectSubset<T, ContatoDeleteArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "delete">, never, ExtArgs>
 
     /**
      * Update one Contato.
@@ -1294,10 +1288,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    update<T extends ContatoUpdateArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoUpdateArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+     */
+    update<T extends ContatoUpdateArgs>(args: SelectSubset<T, ContatoUpdateArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "update">, never, ExtArgs>
 
     /**
      * Delete zero or more Contatoes.
@@ -1310,10 +1302,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    deleteMany<T extends ContatoDeleteManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, ContatoDeleteManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    deleteMany<T extends ContatoDeleteManyArgs>(args?: SelectSubset<T, ContatoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Contatoes.
@@ -1331,10 +1321,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    updateMany<T extends ContatoUpdateManyArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoUpdateManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    updateMany<T extends ContatoUpdateManyArgs>(args: SelectSubset<T, ContatoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Contato.
@@ -1352,10 +1340,9 @@ export namespace Prisma {
      *     // ... the filter for the Contato we want to update
      *   }
      * })
-    **/
-    upsert<T extends ContatoUpsertArgs<ExtArgs>>(
-      args: SelectSubset<T, ContatoUpsertArgs<ExtArgs>>
-    ): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+     */
+    upsert<T extends ContatoUpsertArgs>(args: SelectSubset<T, ContatoUpsertArgs<ExtArgs>>): Prisma__ContatoClient<$Result.GetResult<Prisma.$ContatoPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
 
     /**
      * Count the number of Contatoes.
@@ -1495,30 +1482,29 @@ export namespace Prisma {
    * https://github.com/prisma/prisma-client-js/issues/707
    */
   export interface Prisma__ContatoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: 'PrismaPromise';
-
-
+    readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
+
 
 
 
@@ -1535,7 +1521,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * Contato findUnique
    */
@@ -1550,7 +1535,6 @@ export namespace Prisma {
     where: ContatoWhereUniqueInput
   }
 
-
   /**
    * Contato findUniqueOrThrow
    */
@@ -1564,7 +1548,6 @@ export namespace Prisma {
      */
     where: ContatoWhereUniqueInput
   }
-
 
   /**
    * Contato findFirst
@@ -1610,7 +1593,6 @@ export namespace Prisma {
     distinct?: ContatoScalarFieldEnum | ContatoScalarFieldEnum[]
   }
 
-
   /**
    * Contato findFirstOrThrow
    */
@@ -1655,7 +1637,6 @@ export namespace Prisma {
     distinct?: ContatoScalarFieldEnum | ContatoScalarFieldEnum[]
   }
 
-
   /**
    * Contato findMany
    */
@@ -1695,7 +1676,6 @@ export namespace Prisma {
     distinct?: ContatoScalarFieldEnum | ContatoScalarFieldEnum[]
   }
 
-
   /**
    * Contato create
    */
@@ -1710,7 +1690,6 @@ export namespace Prisma {
     data: XOR<ContatoCreateInput, ContatoUncheckedCreateInput>
   }
 
-
   /**
    * Contato createMany
    */
@@ -1722,6 +1701,20 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  /**
+   * Contato createManyAndReturn
+   */
+  export type ContatoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contato
+     */
+    select?: ContatoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Contatoes.
+     */
+    data: ContatoCreateManyInput | ContatoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * Contato update
@@ -1741,7 +1734,6 @@ export namespace Prisma {
     where: ContatoWhereUniqueInput
   }
 
-
   /**
    * Contato updateMany
    */
@@ -1755,7 +1747,6 @@ export namespace Prisma {
      */
     where?: ContatoWhereInput
   }
-
 
   /**
    * Contato upsert
@@ -1779,7 +1770,6 @@ export namespace Prisma {
     update: XOR<ContatoUpdateInput, ContatoUncheckedUpdateInput>
   }
 
-
   /**
    * Contato delete
    */
@@ -1794,7 +1784,6 @@ export namespace Prisma {
     where: ContatoWhereUniqueInput
   }
 
-
   /**
    * Contato deleteMany
    */
@@ -1805,7 +1794,6 @@ export namespace Prisma {
     where?: ContatoWhereInput
   }
 
-
   /**
    * Contato without action
    */
@@ -1815,7 +1803,6 @@ export namespace Prisma {
      */
     select?: ContatoSelect<ExtArgs> | null
   }
-
 
 
   /**
@@ -1968,6 +1955,12 @@ export namespace Prisma {
     created_at?: boolean
   }, ExtArgs["result"]["goodSun_Email"]>
 
+  export type GoodSun_EmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["goodSun_Email"]>
+
   export type GoodSun_EmailSelectScalar = {
     id?: boolean
     email?: boolean
@@ -1985,7 +1978,6 @@ export namespace Prisma {
     }, ExtArgs["result"]["goodSun_Email"]>
     composites: {}
   }
-
 
   type GoodSun_EmailGetPayload<S extends boolean | null | undefined | GoodSun_EmailDefaultArgs> = $Result.GetResult<Prisma.$GoodSun_EmailPayload, S>
 
@@ -2006,14 +1998,12 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findUnique<T extends GoodSun_EmailFindUniqueArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailFindUniqueArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+     */
+    findUnique<T extends GoodSun_EmailFindUniqueArgs>(args: SelectSubset<T, GoodSun_EmailFindUniqueArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
 
     /**
-     * Find one GoodSun_Email that matches the filter or throw an error  with `error.code='P2025'` 
-     *     if no matches were found.
+     * Find one GoodSun_Email that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
      * @param {GoodSun_EmailFindUniqueOrThrowArgs} args - Arguments to find a GoodSun_Email
      * @example
      * // Get one GoodSun_Email
@@ -2022,10 +2012,8 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findUniqueOrThrow<T extends GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+     */
+    findUniqueOrThrow<T extends GoodSun_EmailFindUniqueOrThrowArgs>(args: SelectSubset<T, GoodSun_EmailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
 
     /**
      * Find the first GoodSun_Email that matches the filter.
@@ -2039,10 +2027,8 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findFirst<T extends GoodSun_EmailFindFirstArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailFindFirstArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+     */
+    findFirst<T extends GoodSun_EmailFindFirstArgs>(args?: SelectSubset<T, GoodSun_EmailFindFirstArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
 
     /**
      * Find the first GoodSun_Email that matches the filter or
@@ -2057,16 +2043,14 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-    **/
-    findFirstOrThrow<T extends GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+     */
+    findFirstOrThrow<T extends GoodSun_EmailFindFirstOrThrowArgs>(args?: SelectSubset<T, GoodSun_EmailFindFirstOrThrowArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
 
     /**
      * Find zero or more GoodSun_Emails that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GoodSun_EmailFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {GoodSun_EmailFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all GoodSun_Emails
      * const goodSun_Emails = await prisma.goodSun_Email.findMany()
@@ -2077,10 +2061,8 @@ export namespace Prisma {
      * // Only select the `id`
      * const goodSun_EmailWithIdOnly = await prisma.goodSun_Email.findMany({ select: { id: true } })
      * 
-    **/
-    findMany<T extends GoodSun_EmailFindManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailFindManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'findMany'>>
+     */
+    findMany<T extends GoodSun_EmailFindManyArgs>(args?: SelectSubset<T, GoodSun_EmailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "findMany">>
 
     /**
      * Create a GoodSun_Email.
@@ -2093,26 +2075,46 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    create<T extends GoodSun_EmailCreateArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailCreateArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+     */
+    create<T extends GoodSun_EmailCreateArgs>(args: SelectSubset<T, GoodSun_EmailCreateArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "create">, never, ExtArgs>
 
     /**
      * Create many GoodSun_Emails.
-     *     @param {GoodSun_EmailCreateManyArgs} args - Arguments to create many GoodSun_Emails.
-     *     @example
-     *     // Create many GoodSun_Emails
-     *     const goodSun_Email = await prisma.goodSun_Email.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {GoodSun_EmailCreateManyArgs} args - Arguments to create many GoodSun_Emails.
+     * @example
+     * // Create many GoodSun_Emails
+     * const goodSun_Email = await prisma.goodSun_Email.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
-    **/
-    createMany<T extends GoodSun_EmailCreateManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailCreateManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    createMany<T extends GoodSun_EmailCreateManyArgs>(args?: SelectSubset<T, GoodSun_EmailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GoodSun_Emails and returns the data saved in the database.
+     * @param {GoodSun_EmailCreateManyAndReturnArgs} args - Arguments to create many GoodSun_Emails.
+     * @example
+     * // Create many GoodSun_Emails
+     * const goodSun_Email = await prisma.goodSun_Email.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GoodSun_Emails and only return the `id`
+     * const goodSun_EmailWithIdOnly = await prisma.goodSun_Email.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GoodSun_EmailCreateManyAndReturnArgs>(args?: SelectSubset<T, GoodSun_EmailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "createManyAndReturn">>
 
     /**
      * Delete a GoodSun_Email.
@@ -2125,10 +2127,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    delete<T extends GoodSun_EmailDeleteArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailDeleteArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+     */
+    delete<T extends GoodSun_EmailDeleteArgs>(args: SelectSubset<T, GoodSun_EmailDeleteArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "delete">, never, ExtArgs>
 
     /**
      * Update one GoodSun_Email.
@@ -2144,10 +2144,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    update<T extends GoodSun_EmailUpdateArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailUpdateArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+     */
+    update<T extends GoodSun_EmailUpdateArgs>(args: SelectSubset<T, GoodSun_EmailUpdateArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "update">, never, ExtArgs>
 
     /**
      * Delete zero or more GoodSun_Emails.
@@ -2160,10 +2158,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    deleteMany<T extends GoodSun_EmailDeleteManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, GoodSun_EmailDeleteManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    deleteMany<T extends GoodSun_EmailDeleteManyArgs>(args?: SelectSubset<T, GoodSun_EmailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more GoodSun_Emails.
@@ -2181,10 +2177,8 @@ export namespace Prisma {
      *   }
      * })
      * 
-    **/
-    updateMany<T extends GoodSun_EmailUpdateManyArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailUpdateManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<BatchPayload>
+     */
+    updateMany<T extends GoodSun_EmailUpdateManyArgs>(args: SelectSubset<T, GoodSun_EmailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one GoodSun_Email.
@@ -2202,10 +2196,9 @@ export namespace Prisma {
      *     // ... the filter for the GoodSun_Email we want to update
      *   }
      * })
-    **/
-    upsert<T extends GoodSun_EmailUpsertArgs<ExtArgs>>(
-      args: SelectSubset<T, GoodSun_EmailUpsertArgs<ExtArgs>>
-    ): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+     */
+    upsert<T extends GoodSun_EmailUpsertArgs>(args: SelectSubset<T, GoodSun_EmailUpsertArgs<ExtArgs>>): Prisma__GoodSun_EmailClient<$Result.GetResult<Prisma.$GoodSun_EmailPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
 
     /**
      * Count the number of GoodSun_Emails.
@@ -2345,30 +2338,29 @@ export namespace Prisma {
    * https://github.com/prisma/prisma-client-js/issues/707
    */
   export interface Prisma__GoodSun_EmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: 'PrismaPromise';
-
-
+    readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
+
 
 
 
@@ -2383,7 +2375,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * GoodSun_Email findUnique
    */
@@ -2398,7 +2389,6 @@ export namespace Prisma {
     where: GoodSun_EmailWhereUniqueInput
   }
 
-
   /**
    * GoodSun_Email findUniqueOrThrow
    */
@@ -2412,7 +2402,6 @@ export namespace Prisma {
      */
     where: GoodSun_EmailWhereUniqueInput
   }
-
 
   /**
    * GoodSun_Email findFirst
@@ -2458,7 +2447,6 @@ export namespace Prisma {
     distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
   }
 
-
   /**
    * GoodSun_Email findFirstOrThrow
    */
@@ -2503,7 +2491,6 @@ export namespace Prisma {
     distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
   }
 
-
   /**
    * GoodSun_Email findMany
    */
@@ -2543,7 +2530,6 @@ export namespace Prisma {
     distinct?: GoodSun_EmailScalarFieldEnum | GoodSun_EmailScalarFieldEnum[]
   }
 
-
   /**
    * GoodSun_Email create
    */
@@ -2558,7 +2544,6 @@ export namespace Prisma {
     data: XOR<GoodSun_EmailCreateInput, GoodSun_EmailUncheckedCreateInput>
   }
 
-
   /**
    * GoodSun_Email createMany
    */
@@ -2570,6 +2555,20 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  /**
+   * GoodSun_Email createManyAndReturn
+   */
+  export type GoodSun_EmailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodSun_Email
+     */
+    select?: GoodSun_EmailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GoodSun_Emails.
+     */
+    data: GoodSun_EmailCreateManyInput | GoodSun_EmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * GoodSun_Email update
@@ -2589,7 +2588,6 @@ export namespace Prisma {
     where: GoodSun_EmailWhereUniqueInput
   }
 
-
   /**
    * GoodSun_Email updateMany
    */
@@ -2603,7 +2601,6 @@ export namespace Prisma {
      */
     where?: GoodSun_EmailWhereInput
   }
-
 
   /**
    * GoodSun_Email upsert
@@ -2627,7 +2624,6 @@ export namespace Prisma {
     update: XOR<GoodSun_EmailUpdateInput, GoodSun_EmailUncheckedUpdateInput>
   }
 
-
   /**
    * GoodSun_Email delete
    */
@@ -2642,7 +2638,6 @@ export namespace Prisma {
     where: GoodSun_EmailWhereUniqueInput
   }
 
-
   /**
    * GoodSun_Email deleteMany
    */
@@ -2653,7 +2648,6 @@ export namespace Prisma {
     where?: GoodSun_EmailWhereInput
   }
 
-
   /**
    * GoodSun_Email without action
    */
@@ -2663,7 +2657,6 @@ export namespace Prisma {
      */
     select?: GoodSun_EmailSelect<ExtArgs> | null
   }
-
 
 
   /**
